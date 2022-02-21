@@ -44,12 +44,53 @@ class game():
         self.cursor_pos = None
         self.click = False
         self.clicked_rect = {'id':None, 'data':None}
-
         self.rect_color = (90,90,90)
+
+        self.cards = {}
+        self.cards_id = []
+
 
     def beizer(self, x): #utile pour faire de petites animation de position/couleurs
         return x**2*(3-2*x)
-
+    
+    def generate_cards(self, nb_cards=52):
+        # code repris en partie de res/imgs/rename.py
+        suites = [ (0,'T'), (14, 'K'), (28, 'C'), (42, 'P') ]
+        for start, suite in suites:
+            for i in range(1,14):
+                targ = str(i)
+                if i == 1:
+                    targ = 'A'
+                elif i == 11:
+                    targ = 'V'
+                elif i == 12:
+                    targ = 'D'
+                elif i == 13:
+                    targ = 'R'
+                self.cards_id.append({'valeur':targ,'couleur':suite})
+        # for i,c in [(56, 'J-N'), (57, 'J-R'), (58, 'dos')]:
+        #     self.cards_id.append({'valeur':c,'couleur':None})
+    
+    def load_img(self, nb_cartes=52, card_list=[]):
+        # exemple de la liste
+        #card_list = [{"valeur":"7", "couleur":"P"}, {"valeur":"10", "couleur":"K"}, {"valeur":"D", "couleur":"K"}]
+        for card in card_list:
+            file = "res/imgs/carte-{}-{}.gif".format(card['valeur'],card['couleur'])
+            id = '{} {}'.format(card['valeur'],card['couleur'])
+            img = pygame.image.load(file)
+            resized_img = pygame.transform.scale(img, (img.get_width()*0.5, img.get_height()*0.5))
+            self.cards[id] = {'file':file,'object':resized_img}
+    
+    def show_img(self):
+        x=10
+        y=10
+        for card in self.cards:
+            self.window_surface.blit(self.cards[card]['object'], (x,y))
+            x+= self.cards[card]['object'].get_width() + 10
+            if x+self.cards[card]['object'].get_width() + 10 > self.w: # si les images dépassent de l'écran
+                x=10
+                y+= self.cards[card]['object'].get_height() +10
+    
     def text(self, pos, text, id, color=(255,255,255), size=24, centered=True):
         """Génère les textes et les ajoutes dans la liste d'objets a rendre
         Args:
@@ -113,6 +154,7 @@ class game():
                 self.rect_color=(90,90,90)
         for txt in self.texts: #afficher les textes
             self.window_surface.blit(self.texts[txt][0], self.texts[txt][1])
+        self.show_img()
         pygame.display.flip()
 
     def test_affichage(self, x, y, text="Bouton"): #afficher le texte et le rectangle
@@ -130,6 +172,8 @@ if __name__ == "__main__":
     y_status = 0
     txt = "Bouton de la mort"
     nb = 0
+    G.generate_cards()
+    G.load_img(52, G.cards_id)
 
     while G.is_running:
         for event in pygame.event.get():
