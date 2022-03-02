@@ -63,11 +63,30 @@ def saut_si_possible(liste_tas, num_tas):
             return True
     return False
 
+def saut(liste_tas, index_card):
+	liste_tas.remove(index_card-1)
+
 def une_etape_reussite(liste_tas, pioche, affiche=False):
-    card = pioche.pop()
-    liste_tas.append(card)
-    if saut_si_possible(liste_tas, len(liste_tas)-2):
-        pass
+	card = pioche.pop(0) # changer la carte de liste
+	liste_tas.append(card)
+	if affiche: afficher_reussite(liste_tas)
+	if saut_si_possible(liste_tas, len(liste_tas)-2): # faire le saut
+		saut(liste_tas, len(liste_tas)-2)
+		if affiche: afficher_reussite(liste_tas)
+	end = False
+	while not end:
+		i=0
+		while i<len(liste_tas):
+			if saut_si_possible(liste_tas,i): 
+				saut(liste_tas,i)
+				if affiche: afficher_reussite(liste_tas)
+				break
+			if i>=len(liste_tas)-1: end = True
+			i+=1
+	 
+
+
+
 
 
 
