@@ -3,8 +3,6 @@
 # --- BUGS ---
 # R.A.S
 # -- TACHES --
-# > Fonction pour importer les cartes (depuis res/imgs/XX.gif )
-# > Fonction pour afficher carte (stockés dans un dic) 
 # > Structurer le menu
 # > Transformer le programme en classe pour être appelé par main.py
 # 
