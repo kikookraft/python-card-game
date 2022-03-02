@@ -1,4 +1,5 @@
 # le fichier qui contient toutes les fonctions
+import random 
 
 def test():
     print("C'est ok !")
@@ -42,6 +43,15 @@ def ecrire_fichier_reussite(nom_fich,pioche):
 		for i in pioche:
 			fi.write(str(i["valeur"])+"-"+i["couleur"]+" ")
 
+def init_pioche_alea(nb_cartes=32):
+	va=[7,8,9,10,"R","D","V","A",2,3,4,5,6]
+	co=["P","C","K","T"]
+	c=[]
+	for i in range(int(8+((nb_cartes-32)/4))):
+		for j in range(4):
+			c+=[{"valeur":va[i],"couleur":co[j]}]
+	random.shuffle(c)
+	return c
 
 def alliance(card1, card2):
     return card1["valeur"] == card2["valeur"]
