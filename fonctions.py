@@ -3,6 +3,20 @@
 def test():
     print("C'est ok !")
 
+def carte_to_chaine(d):
+	m=""
+	if str(d['valeur'])!="10":
+		m+=" "
+	m+=str(d['valeur'])
+	if d['couleur']=='P':
+		m+=chr(9824)
+	elif d['couleur']=='C':
+		m+=chr(9825)
+	elif d['couleur']=='K':
+		m+=chr(9826)
+	elif d['couleur']=='T':
+		m+=chr(9827)
+	return m
 
 def alliance(card1, card2):
     return card1["valeur"] == card2["valeur"]
