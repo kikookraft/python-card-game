@@ -25,6 +25,18 @@ def afficher_reussite(l):
 			print(" ")
 	print("\n\n")
 
+def init_pioche_fichier(n):
+	l2=[]
+	with open(n, "r") as a:
+		c=a.read()
+		l=c.split()
+	for i in l:
+		j=i.split("-")
+		if j[0] in ["2","3","4","5","6","7","8","9","10"]:
+			j[0]=int(j[0])
+		l2+=[{"valeur":j[0],"couleur":j[1]}]
+	return l2
+
 def alliance(card1, card2):
     return card1["valeur"] == card2["valeur"]
 
