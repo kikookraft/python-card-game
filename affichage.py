@@ -34,7 +34,7 @@ class game():
         self.background = pygame.Surface(self.screen_size)
         self.clock = pygame.time.Clock()
         self.background.fill(pygame.Color(self.bg_color))
-        self.window_surface = pygame.display.set_mode(self.screen_size)
+        self.window_surface = pygame.display.set_mode(self.screen_size, pygame.RESIZABLE)
         self.font = pygame.font.SysFont(self.general_font, 24)
         game.clock = pygame.time.Clock()
         self.texts = {}
@@ -46,8 +46,10 @@ class game():
         self.clicked_rect = {'id':None, 'data':None}
         self.rect_color = (90,90,90)
 
+        # variables des cartes
         self.cards = {}
         self.cards_id = []
+        self.card_size = 0.5
         
         # pour le bouton qui se balade
         self.btn_x = 0
@@ -82,8 +84,8 @@ class game():
         for card in card_list:
             file = "res/imgs/carte-{}-{}.gif".format(card['valeur'],card['couleur'])
             id = '{} {}'.format(card['valeur'],card['couleur'])
-            img = pygame.image.load(file)
-            resized_img = pygame.transform.scale(img, (img.get_width()*0.5, img.get_height()*0.5))
+            img = pygame.image.load(file).convert()
+            resized_img = pygame.transform.smoothscale(img, (img.get_width()*self.card_size, img.get_height()*self.card_size))
             self.cards[id] = {'file':file,'object':resized_img}
     
     def show_img(self):
@@ -191,6 +193,14 @@ if __name__ == "__main__":
                 if event.key == pygame.K_ESCAPE: #touche echap
                     pygame.quit()
                     quit()
+                if event.key == pygame.K_KP_PLUS and G.card_size < 1:
+                    G.card_size+=0.1
+                    G.cards.clear()
+                    G.load_img(52, G.cards_id)
+                if event.key == pygame.K_KP_MINUS and G.card_size > 0.3:
+                    G.card_size-=0.1
+                    G.cards.clear()
+                    G.load_img(52, G.cards_id)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
                     G.click = True
