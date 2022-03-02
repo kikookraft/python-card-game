@@ -37,6 +37,12 @@ def init_pioche_fichier(n):
 		l2+=[{"valeur":j[0],"couleur":j[1]}]
 	return l2
 
+def ecrire_fichier_reussite(nom_fich,pioche):
+	with open(nom_fich, "w") as fi:
+		for i in pioche:
+			fi.write(str(i["valeur"])+"-"+i["couleur"]+" ")
+
+
 def alliance(card1, card2):
     return card1["valeur"] == card2["valeur"]
 
