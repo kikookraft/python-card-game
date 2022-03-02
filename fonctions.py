@@ -18,6 +18,13 @@ def carte_to_chaine(d):
 		m+=chr(9827)
 	return m
 
+def afficher_reussite(l):
+	for i in l:
+		print(carte_to_chaine(i))
+		if i!=(len(l)-1):
+			print(" ")
+	print("\n\n")
+
 def alliance(card1, card2):
     return card1["valeur"] == card2["valeur"]
 
