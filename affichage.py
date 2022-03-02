@@ -48,6 +48,11 @@ class game():
 
         self.cards = {}
         self.cards_id = []
+        
+        # pour le bouton qui se balade
+        self.btn_x = 0
+        self.btn_y = 0
+        self.btn_text = "None"
 
 
     def beizer(self, x): #utile pour faire de petites animation de position/couleurs
@@ -130,6 +135,7 @@ class game():
         self.window_surface.blit(self.background, (0, 0))
         self.tick += 1
         self.clock.tick(self.FPS)
+        self.show_img()
         for rect in self.rect: #afficher chaque surface
             if self.rect[rect]['ratio']: #si l'objet contient ratio a True on affiche un carré
                 x= self.rect[rect]['pos'][0] - self.rect[rect]['size'][1]/2 ## centrer en x
@@ -154,7 +160,7 @@ class game():
                 self.rect_color=(90,90,90)
         for txt in self.texts: #afficher les textes
             self.window_surface.blit(self.texts[txt][0], self.texts[txt][1])
-        self.show_img()
+        self.test_affichage(self.btn_x, self.btn_y,self.btn_text)
         pygame.display.flip()
 
     def test_affichage(self, x, y, text="Bouton"): #afficher le texte et le rectangle
@@ -219,6 +225,8 @@ if __name__ == "__main__":
             y_status=0
             txt="DVD"
         ###########################
-        G.test_affichage(x,y, txt)
+        G.btn_x = x
+        G.btn_y = y
+        G.btn_text = txt
 
         G.refresh()
