@@ -18,7 +18,7 @@ def une_etape_reussite(liste_tas, pioche, affiche=False):
     card = pioche.pop()
     liste_tas.append(card)
     if saut_si_possible(liste_tas, len(liste_tas)-2):
-        
+        pass
 
 
 
