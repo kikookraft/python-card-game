@@ -3,10 +3,10 @@
 # --- BUGS ---
 # R.A.S
 # -- TACHES --
-# > Structurer le menu
+# > Structurer le menu (activer surlignage des boutons)
 # > Transformer le programme en classe pour être appelé par main.py
 # 
-# > Dormir 
+# > ...
 #
 
 import pygame #2.1.2
@@ -43,6 +43,7 @@ class game():
         self.click = False
         self.clicked_rect = {'id':None, 'data':None}
         self.rect_color = (90,90,90)
+        self.test = False
 
         # variables des cartes
         self.cards = {}
@@ -160,34 +161,60 @@ class game():
                 self.rect_color=(90,90,90)
         for txt in self.texts: #afficher les textes
             self.window_surface.blit(self.texts[txt][0], self.texts[txt][1])
-        self.test_affichage(self.btn_x, self.btn_y,self.btn_text)
+        if self.test: self.test_affichage(self.btn_x, self.btn_y,self.btn_text)
         pygame.display.flip()
 
     def test_affichage(self, x, y, text="Bouton"): #afficher le texte et le rectangle
         self.draw_rect("test", (x,y), (150, 80), self.rect_color)
-        self.text((x,y), text, "azertyui")
+        self.text((x,y), text, "test")
+
+    def menu(self):
+        pos = (self.w/2, self.h/8*3)
+        self.draw_rect("play_rect", pos, (150, 50), self.rect_color)
+        self.text(pos, "JOUER", "play")
+        pos = (self.w/2, self.h/2)
+        self.draw_rect("opt_rect", pos, (150, 50), self.rect_color)
+        self.text(pos, "OPTIONS", "opt")
+        pos = (self.w/2, self.h/8*5)
+        self.draw_rect("quit_rect", pos, (150, 50), self.rect_color)
+        self.text(pos, "QUITTER", "quit")
         
 
 if __name__ == "__main__":
     G = game()
     G.refresh()
 
+    #pour le bouton de test
     x=75
     y=40
     x_status = 0
     y_status = 0
     txt = "Bouton de la mort"
+    ##
+
     nb = 0
-    G.generate_cards()
-    G.load_img(52, G.cards_id)
 
     while G.is_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT: #bouton 'X' de la fenetre
                 G.is_running = False
             if event.type == pygame.KEYDOWN: #appui de touche
-                if event.key == pygame.K_SPACE: #touche espace
-                    print("pas encore implémenté")
+                if event.key == pygame.K_t: #touche espace
+                    if G.test:
+                        print("Désactivation du mode test")
+                        G.test = False
+                        # suprimmer le texte et rectangle 
+                        G.rect.pop("test")
+                        G.texts.pop("test")
+                        G.cards.clear()
+                        G.cards_id.clear()
+                    else:
+                        print("Activation du mode test")
+                        G.test = True
+                        G.generate_cards()
+                        G.load_img(52, G.cards_id)
+                if event.key == pygame.K_m:
+                    G.menu()
                 if event.key == pygame.K_ESCAPE: #touche echap
                     pygame.quit()
                     quit()
@@ -204,37 +231,39 @@ if __name__ == "__main__":
                     G.click = True
         
         if G.click: #effectuer une action quand un click est fait
-            if G.clicked_rect == "test":
+            if G.clicked_rect == "test" and G.test:
                 G.rect_color = (90,90,90)
                 nb+=1
                 G.text((500,960), "Le bouton à été cliqué {} fois!".format(nb), 'info', size=42)
                 G.click = False
         
         ########################### code pour bouger le texte
-        if x+75<G.w and x_status==0:
-            x+=3
-        elif x+75 > G.w and x_status==0:
-            x_status = 1
-            txt="Bonsoir"
-        elif x>75 and x_status==1:
-            x-=3
-        elif x<=75 and x_status==1:
-            x_status=0
-            txt="Bouton de la mort"
+        if G.test:
+            if x+75<G.w and x_status==0:
+                x+=3
+            elif x+75 > G.w and x_status==0:
+                x_status = 1
+                txt="Bonsoir"
+            elif x>75 and x_status==1:
+                x-=3
+            elif x<=75 and x_status==1:
+                x_status=0
+                txt="Bouton de la mort"
 
-        if y+40<G.h and y_status==0:
-            y+=2
-        elif y+40 >= G.h and y_status==0:
-            y_status = 1
-            txt="Bouton"
-        elif y>40 and y_status==1:
-            y-=2
-        elif y<=40 and y_status==1:
-            y_status=0
-            txt="DVD"
+            if y+40<G.h and y_status==0:
+                y+=2
+            elif y+40 >= G.h and y_status==0:
+                y_status = 1
+                txt="Bouton"
+            elif y>40 and y_status==1:
+                y-=2
+            elif y<=40 and y_status==1:
+                y_status=0
+                txt="DVD"
+
+            G.btn_x = x
+            G.btn_y = y
+            G.btn_text = txt
         ###########################
-        G.btn_x = x
-        G.btn_y = y
-        G.btn_text = txt
 
         G.refresh()
