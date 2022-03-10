@@ -16,12 +16,15 @@ class game():
     """Classe principale du jeu
     """
     def __init__(self):
+        #variable générales
         self.screen_size=(1000,1000)
         self.w = self.screen_size[0]
         self.h = self.screen_size[1]
         self.bg_color='#141414'
         self.general_font = "res/font/UbuntuMono-Bold.ttf"
         self.is_running = True
+
+        #variable de pygame
         pygame.init()
         pygame.mixer.init()
         pygame.mixer.music.load("res/bensound-dreams.mp3")
@@ -35,6 +38,8 @@ class game():
         self.window_surface = pygame.display.set_mode(self.screen_size, pygame.RESIZABLE)
         self.font = pygame.font.SysFont(self.general_font, 24)
         game.clock = pygame.time.Clock()
+
+        #variable pour les textes et rectangles
         self.texts = {}
         self.rect = {}
         self.tick = 0
@@ -50,10 +55,13 @@ class game():
         self.cards_id = []
         self.card_size = 0.5
         
-        # pour le bouton qui se balade
+        # pour le bouton qui se balade en mode test
         self.btn_x = 0
         self.btn_y = 0
         self.btn_text = "None"
+
+        #variables menu
+        self.show_menu = True
 
 
     def beizer(self, x): #utile pour faire de petites animation de position/couleurs
@@ -85,9 +93,9 @@ class game():
             id = '{} {}'.format(card['valeur'],card['couleur'])
             img = pygame.image.load(file).convert()
             resized_img = pygame.transform.smoothscale(img, (img.get_width()*self.card_size, img.get_height()*self.card_size))
-            self.cards[id] = {'file':file,'object':resized_img}
+            self.cards[id] = {'file':file,'object':resized_img, 'pos':(0,0), 'size':1}
     
-    def show_img(self):
+    def show_img_test(self):
         x=10
         y=10
         for card in self.cards:
@@ -136,7 +144,7 @@ class game():
         self.window_surface.blit(self.background, (0, 0))
         self.tick += 1
         self.clock.tick(self.FPS)
-        self.show_img()
+        self.show_img_test()
         for rect in self.rect: #afficher chaque surface
             if self.rect[rect]['ratio']: #si l'objet contient ratio a True on affiche un carré
                 x= self.rect[rect]['pos'][0] - self.rect[rect]['size'][1]/2 ## centrer en x
@@ -146,22 +154,22 @@ class game():
                 x= self.rect[rect]['pos'][0] - self.rect[rect]['size'][0]/2 ## centrer en x
                 y= self.rect[rect]['pos'][1] - self.rect[rect]['size'][1]/2 ## centrer en y
                 box = pygame.Rect(x, y, self.rect[rect]['size'][0], self.rect[rect]['size'][1])
-            color = self.rect[rect]['color']
-            pygame.draw.rect(self.window_surface, color, box)
+            pygame.draw.rect(self.window_surface, self.rect[rect]['color'], box)
             #detecter click de souris
             self.cursor_pos =  pygame.mouse.get_pos()
             pos_x = self.cursor_pos[0]
             pos_y = self.cursor_pos[1]
             if pos_x>self.rect[rect]['pos'][0]-self.rect[rect]['size'][0]/2 and pos_x<self.rect[rect]['pos'][0]+self.rect[rect]['size'][1] and \
                 pos_y>self.rect[rect]['pos'][1]-self.rect[rect]['size'][1]/2 and pos_y<self.rect[rect]['pos'][1]+self.rect[rect]['size'][1]/2: #changer la couleur du bouton quand la souris passe desssus
-                self.rect_color = (150,150,150)
+                self.rect[rect]['color'] = (150,150,150)
                 if self.click:
                     self.clicked_rect=rect
             else: #réinitialiser la couleur du rectangle
-                self.rect_color=(90,90,90)
+                self.rect[rect]['color'] = (90,90,90)
         for txt in self.texts: #afficher les textes
             self.window_surface.blit(self.texts[txt][0], self.texts[txt][1])
         if self.test: self.test_affichage(self.btn_x, self.btn_y,self.btn_text)
+        pygame.display.update()
         pygame.display.flip()
 
     def test_affichage(self, x, y, text="Bouton"): #afficher le texte et le rectangle
@@ -170,19 +178,20 @@ class game():
 
     def menu(self):
         pos = (self.w/2, self.h/8*3)
-        self.draw_rect("play_rect", pos, (150, 50), self.rect_color)
+        self.draw_rect("play", pos, (150, 50), self.rect_color)
         self.text(pos, "JOUER", "play")
         pos = (self.w/2, self.h/2)
-        self.draw_rect("opt_rect", pos, (150, 50), self.rect_color)
+        self.draw_rect("opt", pos, (150, 50), self.rect_color)
         self.text(pos, "OPTIONS", "opt")
         pos = (self.w/2, self.h/8*5)
-        self.draw_rect("quit_rect", pos, (150, 50), self.rect_color)
+        self.draw_rect("quit", pos, (150, 50), self.rect_color)
         self.text(pos, "QUITTER", "quit")
         
 
 if __name__ == "__main__":
     G = game()
     G.refresh()
+    G.menu()
 
     #pour le bouton de test
     x=75
@@ -213,8 +222,6 @@ if __name__ == "__main__":
                         G.test = True
                         G.generate_cards()
                         G.load_img(52, G.cards_id)
-                if event.key == pygame.K_m:
-                    G.menu()
                 if event.key == pygame.K_ESCAPE: #touche echap
                     pygame.quit()
                     quit()
@@ -235,6 +242,15 @@ if __name__ == "__main__":
                 G.rect_color = (90,90,90)
                 nb+=1
                 G.text((500,960), "Le bouton à été cliqué {} fois!".format(nb), 'info', size=42)
+                G.click = False
+            elif G.clicked_rect == "quit":
+                pygame.quit()
+                quit()
+            elif G.clicked_rect == "opt":
+                G.text((500,950), "Fonctionalitée pas encore implémentée!", "info")
+                G.click = False
+            elif G.clicked_rect == "play":
+                G.text((500,50), "Lancement du jeux...", "loading")
                 G.click = False
         
         ########################### code pour bouger le texte
@@ -265,5 +281,5 @@ if __name__ == "__main__":
             G.btn_y = y
             G.btn_text = txt
         ###########################
-
+        #if G.show_menu: G.menu()
         G.refresh()
