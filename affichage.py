@@ -176,4 +176,47 @@ class game():
         pos = (self.w/2, self.h/8*5)
         self.draw_rect("quit", pos, (150, 50), self.rect_color)
         self.text(pos, "QUITTER", "quit")
+
+class CARD:
+    def __init__(self) -> None:
+        self.color = None
+        self.value = None
+        self.posX = 0
+        self.posY = 0
+        self.size = 0
+        self.hiden = False
+        self.pioche = True
+        self.img = 0
+
+    # def generate_cards(self, nb_cards=52):
+    #     # code repris en partie de res/imgs/rename.py
+    #     suites = [ (0,'T'), (14, 'K'), (28, 'C'), (42, 'P') ]
+    #     for start, suite in suites:
+    #         for i in range(1,14):
+    #             targ = str(i)
+    #             if i == 1:
+    #                 targ = 'A'
+    #             elif i == 11:
+    #                 targ = 'V'
+    #             elif i == 12:
+    #                 targ = 'D'
+    #             elif i == 13:
+    #                 targ = 'R'
+    #             self.cards_id.append({'valeur':targ,'couleur':suite})
+    #     # for i,c in [(56, 'J-N'), (57, 'J-R'), (58, 'dos')]:
+    #     #     self.cards_id.append({'valeur':c,'couleur':None})
+    
+    def load_img(self, card):
+        # exemple de la liste
+        #card_list = [{"valeur":"7", "couleur":"P"}, {"valeur":"10", "couleur":"K"}, {"valeur":"D", "couleur":"K"}]
+        self.color = card['couleur']
+        self.value = card['valeur']
+        self.file = "res/imgs/carte-{}-{}.gif".format(card['valeur'],card['couleur'])
+        self.img = pygame.image.load(self.file).convert()
+
+    
+    def blit(self, surface):
+        id = '{} {}'.format(self.value,self.color)
+        resized_img = pygame.transform.smoothscale(self.img, (self.img.get_width()*self.size, self.img.get_height()*self.size))
+        self.cards_id = {'file':self.file,'object':resized_img, 'pos':(self.posX,self.posY)}
         
