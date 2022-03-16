@@ -1,9 +1,7 @@
 ##python 3.8.5, pygame 2.1.2 (SDL 2.0.18)
 
-# --- BUGS ---
-# R.A.S
+#
 # -- TACHES --
-# > Structurer le menu (activer surlignage des boutons)
 # > Transformer le programme en classe pour être appelé par main.py
 # 
 # > ...
@@ -252,6 +250,7 @@ if __name__ == "__main__":
             elif G.clicked_rect == "play":
                 G.text((500,50), "Lancement du jeux...", "loading")
                 G.click = False
+            G.clicked_rect= None
         
         ########################### code pour bouger le texte
         if G.test:
