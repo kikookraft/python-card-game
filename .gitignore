@@ -1,2 +1,10 @@
 __pychache__
 **.pyc
+*.aux
+*.log
+*.pdf
+*.gz
+*.fdb_latexmk
+*.fls
+*.toc
+*.out

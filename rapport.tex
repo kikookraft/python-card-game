@@ -1,0 +1,179 @@
+\documentclass{scrartcl}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref} %pour les liens
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\newcommand{\ts}[1]{{\fontfamily{pcr}\selectfont #1}}
+
+\title{La réussite des alliances}
+\subtitle{Groupe MI4--06}
+\author{Tomy Besson, Lenny Bay}
+
+\begin{document}
+
+\sffamily
+\maketitle
+
+\tableofcontents
+
+\thispagestyle{empty}
+\clearpage
+\setcounter{page}{1}
+
+
+%#### PARTIE 1 - Présentation ####
+\section{Présentation}
+Lien du projet:  
+ 
+\url{https://gitlab.isima.fr/tobesson1/projet-info-l1-s2}
+
+\subsection{Organisation du travail}
+Nous avons commencé par écrire les fonctions olbigatoires.
+Ensuite Lenny s'est occupé de l'outil de statistiques et Tomy de l'interface graphique ansi que le dépôt git.
+
+\subsection{Organisation du dépôt git}
+Le dépôt est organisé avec plusieurs branches:
+\begin{enumerate}
+    \item \ts{main}: Cette branche contient le rapport latex et la dernière version du projet
+    \item \ts{fonctions}: Cette branche contient les fonctions obligatoires
+    \item \ts{UI}: Cette branche contient les fonctions et tout les fichiers neccessaires pour l'interface graphique
+\end{enumerate}
+Les differentes branches permettent de travailler sans interférer avec le travail de l'autre.
+
+%#### PARTIE 2 - Fonctions obligatoires ####
+\section{Fonctions obligatoires}
+
+\subsection{Les differents modes}
+\subsubsection{Mode manuel}\label{subsec:mode_m}
+Cette fonction commence par copier la pioche donné (pour ne pas la modifier) dans \ts{pio}, puis créé la liste \ts{r} qui contient les carte sur le plateau, on affiche ensuite le nombre de cartes dans la pioche puis on lance la boucle principale.
+
+Dans celle-ci on commence par verifier si le joueur peut encore piocher pour lui afficher la question adaptée (\ts{re} est utilisé pour enregistrer les réponses).
+Il est possible de répondre \ts{stop} a tout moment pour arrêter la partie, ce qui stopera la boucle.
+Si l'utilisateur choisi de piocher, le programme fait simplement le saut, réaffiche la partie, et la boucle recommence.
+Sinon s'il décide de faire un saut, pour simplifier le choix de la carte a l'utilisateur, on affiche en dessous la positions des cartes (en prenant soin de bien espacer les numéros si ils ont 2 chiffres), puis on demande le numéro de la carte qu'il veut faire sauter et on la fait sauter si c'est possible sinon on lui indique qu'il ne peut pas.
+
+A la fin de la boucle le programme remplis la réussite avec les cartes qui restent dans la pioche et affiche si le joueur a gagné ou perdu avant de retourner la réussite.
+
+\subsubsection{Mode automatique}\label{subsec:mode_a}
+Dans cette fonction on commence par faire un copie de la pioche dans \ts{pio}, on affiche la réussite si affiche=True, puis on lance la boucle principale.
+
+Cette boucle appelle simplement la fonction {\fontfamily{pcr}\selectfont \verb+une_etape_reussite+} tant que la pioche \ts{n} est pas vide.
+
+On retourne la réussite à la fin de la partie.
+ 
+\subsection{Utilisation des modes}
+
+\subsubsection{Mode manuel}
+Pour utiliser le programme il suffie d'entrer une réponse parmie celles possible:
+
+- pioche (\ts{p}) ou saut (\ts{s}): \ts{s} pour faire un saut / \ts{p} pour piocher / \ts{stop} pour arrêter la partie
+
+- saut (\ts{s}) ou \ts{stop}: de même que pour le précédent mais cette fois piocher n'est pas possible
+
+- quelle saut?: il faut entrer le numéro en dessous de la carte que l'on veut faire sauter ou ecrire \ts{stop} pour arrêter la partie
+
+
+%#### PARTIE 3 - Extensions####
+\section{Extensions}
+\subsection{Statistiques}\label{subsec:stats}
+\subsubsection{Fonctionnement}
+Premièrement le fichier texte \ts{states.txt} sert a stoker les résultats des partie en mode manuel effectué avec ce programme (il est donc important de le laisser intact).
+
+Le programme commence par se présenter, et initialise quelques variables:
+- \ts{fin} qui est la variable d'arrêt du programme 
+
+- \ts{j} sert plus tard pour savoir si le programme vous posera une question (j pour jamais)
+
+- \ts{c} pour enregistrer le choix d'option de l'utilisateur (initialiser avec \ts{h} pour help)
+
+Puis affiche les obtion possible avant d'entré dans la boucle principale.
+
+Dans la boucle on commence par demander à l'utilisateur ceux qu'il veut faire parmis les chois possible (il est volontaire de stoper le programme si l'utilisateur entre une autre obtion que celles possibles au cas où il aurait un problème de clavier).
+
+Pour chaque obtion que l'utilisateur choisie le programme l'execute et la boucle recommence.
+
+Dans le mode manuel on utilise simplement des fonction déja définie dans le fichier fonctions.py pour faire une réussite en mode manuel et on sauvgarde le résultat (gagné ou perdue) dans le fichier \ts{states.txt} en préservant les ancient résultats.
+
+Dans le mode automatique on commence par intitialiser quelque variable en les demandant a l'utilisateur, puis on lance n foit le mode automatique de \ts{fonction.py} en lui donnant une nouvelle pioche et en indiquant le pourcentage des partie terminé (on utilise {\fontfamily{pcr}\selectfont \verb+\033[F+} pour pouvoir réécrire sur la ligne précédante lors de l'affichage du pourcentage), et a la fin on affiche quelque informations sur les résultats.
+
+Dans le mode statistique on vas simplement lire les données de \ts{states.txt} et afficher quelque statistique avec celle-ci.
+
+Dans le mode aide on réaffiche simplement les options possibles.
+
+\subsubsection{Utilisation}
+
+- comme le texte de départ l'indique nous avons plusieurs possibilités d'action que l'on choisie en entrant les touche \ts{m-a-s-f-h}
+
+- \ts{m} (mode manuelle) simplement lance le mode manuelle déjà créé dans le fichier fonctions, mais a la fin de la partie il sauvegarde le résultat dans \ts{states.txt} en incrémentant le nombre de partie (première ligne) est le nombre de victoire si il gagne (deuxième ligne)
+
+- \ts{a} (mode automatique) lance en arrière plans un nombre de fois que vous décidé la fonction du mode automatique déjà créé dans le fichier fonctions, la progression des calculs est affiché avec un pourcentage (visible avec de grand nombre de simulation ex: 10000), une option pour afficher les résultats des parties pour vérifier que les statistiques ne sont pas fausse (oui/non/jamais (avec jamais le programme ne vous redemandera plus)) mais attention cela peut vite remplir l'affichage de la console, une option pour choisir a combien de cartes la partie est gagner, et a la fin nous avons quelque information sur les résultat (nombre de victoire et pourcentage de victoire)
+
+- \ts{s} (afficher statistiques) permet de lire le fichier \ts{states.txt} pour afficher des données sur les partie en mode manuelle que le joueur a pus faire enregistrer.
+
+- \ts{f} (fin) met fin au programme
+
+- \ts{h} (help) ré-afficher les options possible ('m-a-s-f-h')
+
+
+\subsection{Interface graphique}\label{subsec:IG}
+\subsubsection{Fonctionnement}
+L'interface graphique utilise la librairie pygame pour fonctioner.
+L'écran et les objets se mettent a jour 60 fois par secondes et l'ecran a une taille de 1500 par 1000 pixels. 
+Chaque element affiché a l'écran est stocké dans son propre dictionnaire contenant toutes les données neccessaires pour l'afficher. 
+Par exemple chaque objet de texte contient une position, couleur, taille de police et texte. 
+Cette technique permet de modifier dynamiquement chaque objet car ils sont redéssiné en fonction de leurs attribus a chaque mise a jour.
+  
+Lors de leur déplacement, les cartes sont animés a partir d'une fonction bézier (pour créer des animations fluides).
+Pour chaque animation les cartes recoivents des données indiquant la durée de l'animation et la position finale de la carte.
+Puis leurs coordonées sont calculées en fonction de la completion de l'animation.
+
+\subsubsection{Utilisation}
+L'interface graphique s'utilise presque completement avec les cliques de souris.
+Pour la démarer il faut selectionner la deuxième option lors de l'execution de \ts{main.py}.
+Il est possible de quitter a tout moment en pressant la touche \ts{ECHAP}
+ 
+Au lancement on peux choisir entre jouer et quitter. Le bouton jouer nous enmène sur un deuxième menu nous invitant a choisir les nombre de cartes (32 ou 52).
+ 
+Après avoir selectioné un choix on accède a l'écran du jeu. 
+Sur cet écran on peux selectionner la pioche pour piocher une nouvelle carte.
+Les cartes se placerons automatiquement au centre de l'écran.  
+Pour toutes les cartes piochées, il est possible de cliquer dessus. Si un saut est possible la carte selectioné diparaitra vers le bas de l'écran et laissera sa place aux autres cartes.
+ 
+Le bouton \ts{RECOMMENCER} en bas a droite permet de retourner sur le menu de choix des cartes afin de commencer une nouvelle partie.  
+
+En haut a droite, collé au bord de l'écran, est caché un bouton \ts{TRICHE} qui permet de piocher et enlever toutes les cartes du jeux sauf deux afin de simuler une victoire du jeux.
+Il est possible d'utiliser ce bouton uniquement lorsqu'il y a au moin une carte piochée.
+
+
+%#### PARTIE 4 - Fonctionnement global #### (je suis pas sûr de garder cette section)
+\section{Fonctionnement global}
+\subsection{Fonctionement du fichier principal}
+Le fichier principal (\ts{main.py}) est celui qui s'occupe d'appeler les fonctions des autres fichiers en fonctions de ce que l'on veux faire.
+ 
+Dans le cas du jeu en mode terminal, ce fichier sert a lancer une partie en appelant les fonctions principales avec les bon arguments.
+
+Pour le mode graphique, le programme lance sa propre boucle du jeu qui permet d'obtenir tout les evenements (tels que les clicks de souris ou les touches préssée)
+et permet de gérer les menus. 
+Cette boucle transmet les evenement aux fonctions de \ts{affichage.py} qui permet de les convertir en evenements graphique.
+\subsection{Utilisation du code}
+Le fichier a executer est \ts{main.py} via la commande \ts{python3 main.py}. 
+
+Pour executer ce programme il est recomandé d'utiliser python 3.8.10 et il faut avoir le module pygame.
+
+Lors du lancement du jeux 3 options nous sont proposées:
+\begin{enumerate}
+    \item Jeu dans le terminal
+    
+    Après avoir choisit cette option vous pouvez choisir entre \hyperref[subsec:mode_m]{le mode manuel} et \hyperref[subsec:mode_a]{le mode automatique} puis entrer les details de la partie.
+    \item \hyperref[subsec:IG]{Jeu avec interface}
+    \item \hyperref[subsec:stats]{Outil de statistiques}
+\end{enumerate}
+Pour quitter ce menu de choix il suffit d'entrer un numéro incorect.
+\subsection{Sources}
+La structure et l'organisation de l'interface graphique est en partie repris d'un ancien projet de Tomy disponible sur ce lien:  
+ 
+\url{https://github.com/kikookraft/not-wordle}
+
+\end{document}
