@@ -8,3 +8,5 @@ __pychache__
 *.fls
 *.toc
 *.out
+.venv/
+env/
