@@ -2,7 +2,7 @@
 
 import pygame #2.1.2
 
-class game():
+class game:
     """Classe principale du jeu
     """
     def __init__(self):
@@ -219,4 +219,11 @@ class CARD:
         id = '{} {}'.format(self.value,self.color)
         resized_img = pygame.transform.smoothscale(self.img, (self.img.get_width()*self.size, self.img.get_height()*self.size))
         self.cards_id = {'file':self.file,'object':resized_img, 'pos':(self.posX,self.posY)}
+
+    def screen(self, surface):
+        surface.blit(self.img, (self.posX,self.posY))
+
+class Player:
+    def __init__(self):
+        self.cards = []
         
